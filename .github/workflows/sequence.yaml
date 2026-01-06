@@ -1,0 +1,27 @@
+name: Continue on failure
+
+on: 
+  workflow_dispatch:
+
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Failing job
+        run: exit 1
+
+  job2:
+    needs: job1
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: This job runs even if job1 fails
+        run: echo "Job1 failed, but Job2 is running anyway."
+  
+  job3:
+    needs: job2 
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: This job runs even if job2 fails
+        run: echo "Job2 completed, so Job3 is running."
